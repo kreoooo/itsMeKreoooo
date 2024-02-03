@@ -1,0 +1,254 @@
+import threading
+import json
+import base64
+from cryptography.fernet import Fernet
+from argon2 import PasswordHasher
+
+def encode_key(key_bytes):
+    """Koduje klucze do formatu Base64."""
+    return base64.b64encode(key_bytes).decode('utf-8')
+
+def decode_key(key_str):
+    """Dekoduje klucze z formatu Base64."""
+    return base64.b64decode(key_str.encode('utf-8'))
+
+class User:
+    def __init__(self, password_hash):
+        self.password_hash = password_hash
+        self.containers = {}
+
+    def create_container(self, container_name):
+        if container_name not in self.containers:
+            self.containers[container_name] = {}
+            print(f"Container '{container_name}' created.")
+        else:
+            print(f"Container '{container_name}' already exists.")
+
+    def add_key_to_container(self, container_name, key_name):
+        if container_name in self.containers:
+            key = Fernet.generate_key()
+            self.containers[container_name][key_name] = encode_key(key)
+            print(f"Key '{key_name}' added to container '{container_name}'.")
+        else:
+            print(f"Container '{container_name}' does not exist.")
+
+    def delete_key_from_container(self, container_name, key_name):
+        if container_name in self.containers and key_name in self.containers[container_name]:
+            del self.containers[container_name][key_name]
+            print(f"Key '{key_name}' deleted from container '{container_name}'.")
+        else:
+            print("Container or key not found.")
+
+    def modify_key_in_container(self, container_name, key_name):
+        if container_name in self.containers and key_name in self.containers[container_name]:
+            new_key = Fernet.generate_key()
+            self.containers[container_name][key_name] = encode_key(new_key)
+            print(f"Key '{key_name}' in container '{container_name}' has been modified.")
+        else:
+            print("Container or key not found.")
+
+    def list_containers(self):
+        print("Available containers:")
+        for container in self.containers:
+            print(container)
+
+    def list_keys_in_container(self, container_name):
+        if container_name in self.containers:
+            print(f"Keys in container '{container_name}':")
+            for key_name in self.containers[container_name]:
+                print(key_name)
+        else:
+            print(f"Container '{container_name}' does not exist.")
+
+    def encrypt_message(self, container_name, key_name, plaintext):
+        if container_name in self.containers and key_name in self.containers[container_name]:
+            key = decode_key(self.containers[container_name][key_name])
+            f = Fernet(key)
+            encrypted_message = f.encrypt(plaintext.encode())
+            return encrypted_message
+        else:
+            print("Container or key not found.")
+            return None
+
+    def decrypt_message(self, container_name, key_name, encrypted_message):
+        if container_name in self.containers and key_name in self.containers[container_name]:
+            key = decode_key(self.containers[container_name][key_name])
+            f = Fernet(key)
+            try:
+                decrypted_message = f.decrypt(encrypted_message).decode()
+                return decrypted_message
+            except Exception as e:
+                print("Decryption error:", e)
+                return None
+        else:
+            print("Container or key not found.")
+            return None
+
+class KeyManager:
+    def __init__(self):
+        self.users = {}
+        self.ph = PasswordHasher()
+        self.current_user = None
+        self.inactivity_timer = None
+        self.inactivity_limit = 300  # 5 minutes timeout
+
+    def add_user(self, username, password):
+        if username not in self.users:
+            password_hash = self.ph.hash(password)
+            self.users[username] = User(password_hash)
+            print(f"User '{username}' added.")
+        else:
+            print(f"User '{username}' already exists.")
+
+    def verify_user_password(self, username, password):
+        if username in self.users:
+            try:
+                return self.ph.verify(self.users[username].password_hash, password)
+            except:
+                return False
+        return False
+
+    def switch_user(self, username):
+        if username in self.users:
+            self.current_user = self.users[username]
+            print(f"Switched to user '{username}'.")
+        else:
+            print(f"User '{username}' does not exist.")
+
+    def reset_inactivity_timer(self):
+        if self.inactivity_timer:
+            self.inactivity_timer.cancel()
+        self.inactivity_timer = threading.Timer(self.inactivity_limit, self.close_application)
+        self.inactivity_timer.start()
+
+    def close_application(self):
+        print("Closing application due to inactivity.")
+        exit()
+
+    def save_data_to_file(self, filename="data.json"):
+        data = {
+            username: {
+                "password_hash": user.password_hash,
+                "containers": user.containers
+            }
+            for username, user in self.users.items()
+        }
+        with open(filename, 'w') as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
+
+    def load_data_from_file(self, filename="data.json"):
+        try:
+            with open(filename, 'r') as file:
+                data = json.load(file)
+                for username, user_data in data.items():
+                    user = User(user_data['password_hash'])
+                    user.containers = user_data['containers']
+                    self.users[username] = user
+        except FileNotFoundError:
+            pass
+
+def main():
+    key_manager = KeyManager()
+    key_manager.load_data_from_file()
+
+    while True:
+        key_manager.reset_inactivity_timer()
+
+        print("\nOptions:")
+        print("1. Register new user")
+        print("2. Log in as user")
+        print("3. Switch user")
+        print("4. Create a new container")
+        print("5. Add a new key to a container")
+        print("6. Delete a key from a container")
+        print("7. Modify a key in a container")
+        print("8. List all containers")
+        print("9. List keys in a container")
+        print("10. Encrypt a message")
+        print("11. Decrypt a message")
+        print("12. Exit")
+
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            username = input("Enter new username: ")
+            password = input("Set a password for this user: ")
+            key_manager.add_user(username, password)
+        elif choice == "2":
+            username = input("Enter username: ")
+            password = input("Enter password: ")
+            if key_manager.verify_user_password(username, password):
+                key_manager.switch_user(username)
+            else:
+                print("Incorrect username or password.")
+        elif choice == "3":
+            username = input("Enter username to switch: ")
+            key_manager.switch_user(username)
+        elif choice == "4":
+            if key_manager.current_user:
+                container_name = input("Enter container name: ")
+                key_manager.current_user.create_container(container_name)
+            else:
+                print("No user currently logged in.")
+        elif choice == "5":
+            if key_manager.current_user:
+                container_name = input("Enter container name: ")
+                key_name = input("Enter key name: ")
+                key_manager.current_user.add_key_to_container(container_name, key_name)
+            else:
+                print("No user currently logged in.")
+        elif choice == "6":
+            if key_manager.current_user:
+                container_name = input("Enter container name: ")
+                key_name = input("Enter key name to delete: ")
+                key_manager.current_user.delete_key_from_container(container_name, key_name)
+            else:
+                print("No user currently logged in.")
+        elif choice == "7":
+            if key_manager.current_user:
+                container_name = input("Enter container name: ")
+                key_name = input("Enter key name to modify: ")
+                key_manager.current_user.modify_key_in_container(container_name, key_name)
+            else:
+                print("No user currently logged in.")
+        elif choice == "8":
+            if key_manager.current_user:
+                key_manager.current_user.list_containers()
+            else:
+                print("No user currently logged in.")
+        elif choice == "9":
+            if key_manager.current_user:
+                container_name = input("Enter container name: ")
+                key_manager.current_user.list_keys_in_container(container_name)
+            else:
+                print("No user currently logged in.")
+        elif choice == "10":
+            if key_manager.current_user:
+                container_name = input("Enter container name: ")
+                key_name = input("Enter key name: ")
+                plaintext = input("Enter message to encrypt: ")
+                encrypted_message = key_manager.current_user.encrypt_message(container_name, key_name, plaintext)
+                if encrypted_message:
+                    print("Encrypted message:", encrypted_message)
+            else:
+                print("No user currently logged in.")
+        elif choice == "11":
+            if key_manager.current_user:
+                container_name = input("Enter container name: ")
+                key_name = input("Enter key name: ")
+                encrypted_message = input("Enter message to decrypt: ").encode()
+                decrypted_message = key_manager.current_user.decrypt_message(container_name, key_name, encrypted_message)
+                if decrypted_message:
+                    print("Decrypted message:", decrypted_message)
+            else:
+                print("No user currently logged in.")
+        elif choice == "12":
+            if key_manager.inactivity_timer:
+                key_manager.inactivity_timer.cancel()
+            key_manager.save_data_to_file()
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+if __name__ == "__main__":
+    main()
