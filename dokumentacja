@@ -1,0 +1,143 @@
+Strona Tytułowa
+
+System Zarządzania Kluczami Kryptograficznymi: Projekt i Implementacja
+
+
+Autorzy:
+Krystian Bąk
+
+
+Przedmiot:
+Kryptografia
+
+
+Uczelnia:
+Akademia Górnośląska im. Wojciecha Korfantego w Katowicach
+
+
+ 
+Cel realizacji projektu
+
+Celem niniejszego projektu jest stworzenie zaawansowanego, ale zarazem intuicyjnego w obsłudze menedżera kluczy kryptograficznych, który umożliwi bezpieczne przechowywanie i zarządzanie kluczami szyfrującymi oraz hasłami użytkowników. Aplikacja ta jest zaprojektowana z myślą o zapewnieniu wysokiego poziomu bezpieczeństwa danych dzięki wykorzystaniu nowoczesnych algorytmów szyfrujących, a jednocześnie ma na celu być prostą w użyciu nawet dla osób nie posiadających zaawansowanej wiedzy z zakresu kryptografii.
+
+Tematyka oprogramowania
+
+Oprogramowanie to skupia się na tematyce kryptografii i bezpieczeństwa cyfrowego, oferując użytkownikom narzędzie do zarządzania kluczami szyfrowymi i hasłami. Aplikacja umożliwia tworzenie zabezpieczonych kontenerów, w których użytkownicy mogą bezpiecznie przechowywać klucze szyfrujące, wykorzystywane do szyfrowania i deszyfrowania prywatnych wiadomości lub innych danych. Funkcjonalność ta jest szczególnie przydatna w środowiskach, gdzie ochrona informacji poufnych jest krytyczna, takich jak przedsiębiorstwa, instytucje finansowe czy organizacje rządowe.
+
+Zastosowany algorytm szyfrujący
+
+Kluczowym elementem oprogramowania jest wykorzystanie algorytmu szyfrującego Fernet z biblioteki cryptography, który stanowi implementację symetrycznego szyfrowania. Algorytm ten zapewnia bezpieczeństwo przechowywanych danych poprzez wykorzystanie klucza do szyfrowania i deszyfrowania informacji. Generacja klucza odbywa się za pomocą bezpiecznej funkcji kryptograficznej, co gwarantuje jego unikalność i odporność na próby złamania.
+
+Fernet opiera się na kombinacji szyfru AES w trybie CBC oraz algorytmu HMAC SHA-256, co zapewnia zarówno poufność, jak i integralność przesyłanych danych. Szyfrowanie za pomocą Fernet jest bezpieczne, o ile klucze są odpowiednio chronione, co w naszym oprogramowaniu zapewnione jest przez skomplikowany proces hashowania haseł użytkowników z wykorzystaniem algorytmu Argon2. Argon2, będący zwycięzcą Password Hashing Competition, jest obecnie jednym z najbardziej zaawansowanych i zalecanych algorytmów do hashowania haseł.
+
+Podsumowanie
+
+Projekt menedżera kluczy ma na celu zwiększenie świadomości na temat bezpieczeństwa cyfrowego oraz promowanie dobrych praktyk związanych z zarządzaniem kluczami szyfrującymi i hasłami. Poprzez połączenie prostoty użytkowania z zaawansowanymi technologiami kryptograficznymi, aplikacja ma za zadanie stać się niezastąpionym narzędziem dla każdego, kto ceni sobie prywatność i bezpieczeństwo swoich danych cyfrowych.
+
+Opis zastosowanego algorytmu szyfrującego
+
+W projekcie menedżera kluczy kryptograficznych wykorzystano algorytm szyfrujący Fernet, który jest standardem w bibliotece cryptography języka Python. Fernet gwarantuje bezpieczeństwo przechowywanych danych poprzez użycie symetrycznego szyfrowania, co oznacza, że ten sam klucz jest używany zarówno do szyfrowania, jak i deszyfrowania danych. Algorytm ten łączy w sobie szyfr blokowy AES (Advanced Encryption Standard) w trybie CBC (Cipher Block Chaining) z wykorzystaniem HMAC (Keyed-Hash Message Authentication Code) SHA-256 do zapewnienia integralności danych.
+
+Historia i założenia
+
+Algorytm Fernet został zaprojektowany z myślą o bezpieczeństwie, prostocie i łatwości w użyciu. AES, będący fundamentem Fernet, jest szeroko stosowanym i analizowanym standardem szyfrowania przyjętym przez National Institute of Standards and Technology (NIST) w USA w 2001 roku. Tryb CBC, w którym wykorzystywany jest AES, dodatkowo zabezpiecza przed różnymi atakami kryptograficznymi poprzez szyfrowanie bloków danych w taki sposób, że każdy blok zależy od wszystkich poprzednich bloków. HMAC SHA-256 używany w Fernet zapewnia z kolei, że zaszyfrowane dane nie zostały zmienione podczas przechowywania czy transmisji, co jest kluczowym aspektem zapewnienia integralności danych.
+
+Przykład działania
+
+Proces szyfrowania w algorytmie Fernet rozpoczyna się od wygenerowania bezpiecznego klucza, który następnie jest używany do szyfrowania danych. Klucz ten musi być przechowywany w bezpiecznym miejscu, ponieważ jego utrata uniemożliwia deszyfrowanie danych. Przykładowo, mając klucz x3qWo39v3BRt-_dMzSvpwgTka4gjRyFsPQlxDGt7ZQU=, proces szyfrowania wiadomości "Hello, world!" za pomocą Fernet wygląda następująco:
+
+•	Inicjalizacja Fernet z kluczem.
+
+•	Szyfrowanie wiadomości, co skutkuje ciągiem zaszyfrowanych danych, np. gAAAAABf1xQeO3E... (dane będą wyglądały inaczej za każdym razem z powodu stosowania soli i IV).
+
+•	Zaszyfrowane dane mogą być bezpiecznie przechowywane lub przesłane.
+Deszyfrowanie odbywa się poprzez podanie tego samego klucza do algorytmu Fernet, który następnie przetwarza zaszyfrowane dane, przywracając ich oryginalną formę, o ile klucz jest poprawny.
+
+Znaczenie i zastosowanie
+
+Zastosowanie algorytmu Fernet w projekcie menedżera kluczy kryptograficznych ma kluczowe znaczenie dla zapewnienia poufności i integralności danych. Jest to szczególnie ważne w kontekście przechowywania kluczy szyfrujących, danych wrażliwych oraz innych poufnych informacji, które mogą być narażone na różnego rodzaju zagrożenia cyfrowe. Fernet, łącząc sprawdzone metody szyfrowania z dodatkowymi mechanizmami zabezpieczającymi, stanowi solidną podstawę bezpiecznego systemu zarządzania kluczami.
+
+Projekt opracowanej aplikacji
+
+Celem zaprojektowanej aplikacji jest stworzenie zaawansowanego systemu do zarządzania kluczami szyfrującymi oraz hasłami, z myślą o zapewnieniu wysokiego poziomu bezpieczeństwa i prywatności użytkowników. System ten umożliwia tworzenie zabezpieczonych kontenerów na klucze i hasła, szyfrowanie i deszyfrowanie danych, a także zarządzanie dostępem do zasobów kryptograficznych.
+
+Zakres funkcjonalny
+Aplikacja oferuje szeroki zakres funkcjonalności, w tym:
+
+•	Rejestracja i zarządzanie użytkownikami: Umożliwia tworzenie kont użytkowników wraz z bezpiecznym hashowaniem haseł.
+
+•	Tworzenie kontenerów na klucze: Pozwala na organizację kluczy szyfrujących w zabezpieczonych kontenerach.
+
+•	Dodawanie, usuwanie i modyfikowanie kluczy: Użytkownicy mogą zarządzać kluczami w ramach kontenerów.
+
+•	Szyfrowanie i deszyfrowanie wiadomości: Umożliwia zabezpieczanie i odszyfrowywanie danych przy użyciu kluczy przechowywanych w aplikacji.
+
+•	Automatyczne zamykanie aplikacji z powodu nieaktywności: Zwiększa bezpieczeństwo poprzez automatyczne zamykanie sesji po określonym czasie braku aktywności.
+
+Zastosowanie biblioteki
+
+W projekcie wykorzystano bibliotekę cryptography dla języka Python, która dostarcza zestaw narzędzi kryptograficznych, w tym implementację algorytmu Fernet do bezpiecznego szyfrowania i deszyfrowania danych. Dodatkowo, do hashowania haseł użyto algorytmu Argon2 z biblioteki argon2, co zapewnia silne hashowanie haseł i zabezpieczenie przed atakami brute-force.
+
+Wybrane diagramy UML
+•	Diagram klas przedstawia strukturę aplikacji wraz z klasami, ich atrybutami i metodami, a także relacjami między nimi. Kluczowe klasy to User, zarządzająca danymi użytkownika i jego kontenerami, oraz KeyManager, obsługująca logikę zarządzania kluczami i użytkownikami.
+
+•	Diagram przypadków użycia ukazuje interakcje między użytkownikami a systemem, w tym procesy takie jak logowanie, zarządzanie kluczami, szyfrowanie i deszyfrowanie danych.
+
+•	Diagram aktywności opisuje procesy zachodzące w systemie, takie jak proces dodawania nowego klucza do kontenera, z detalami każdego kroku, od wyboru kontenera po generowanie i zapisywanie klucza.
+
+•	Diagram sekwencji może być użyty do szczegółowego przedstawienia, jak procesy takie jak szyfrowanie i deszyfrowanie wiadomości są realizowane w czasie, pokazując wymianę komunikatów między obiektami.
+
+Przykład działania opracowanego rozwiązania
+W celu zaprezentowania działania opracowanego systemu zarządzania kluczami, przedstawiony zostanie tutorial krok po kroku, który przeprowadzi użytkownika przez podstawowe funkcjonalności aplikacji. System umożliwia między innymi rejestrację i logowanie użytkowników, tworzenie kontenerów na klucze, dodawanie i zarządzanie kluczami, a także szyfrowanie i deszyfrowanie wiadomości.
+
+Rejestracja użytkownika
+
+1.	Uruchomienie aplikacji: Użytkownik uruchamia aplikację i jest przywitany przez główne menu z opcjami.
+
+2.	Wybór opcji rejestracji: Z głównego menu użytkownik wybiera opcję "Rejestracja nowego użytkownika".
+
+
+3.	Wprowadzenie danych: Użytkownik podaje wybraną nazwę użytkownika oraz hasło, które są przetwarzane przez system.
+
+4.	Hashowanie hasła: System używa algorytmu Argon2 do bezpiecznego hashowania podanego hasła.
+
+5.	Zakończenie rejestracji: Po pomyślnej rejestracji użytkownik otrzymuje komunikat potwierdzający i może przejść do logowania.
+
+Logowanie użytkownika
+
+1.	Wybór opcji logowania: Z głównego menu użytkownik wybiera opcję "Logowanie użytkownika".
+
+2.	Wprowadzenie danych logowania: Użytkownik wpisuje swoją nazwę użytkownika oraz hasło.
+
+3.	Weryfikacja danych: System sprawdza poprawność danych i w przypadku sukcesu przyznaje dostęp do konta.
+
+4.	Pomyślne logowanie: Użytkownik otrzymuje dostęp do swojego panelu zarządzania kluczami.
+
+Tworzenie kontenera na klucze
+1.	Wybór opcji tworzenia kontenera: Z panelu użytkownika wybierana jest opcja "Utwórz nowy kontener".
+
+2.	Nazwanie kontenera: Użytkownik wpisuje nazwę dla nowego kontenera, np. "Moje klucze prywatne".
+
+3.	Tworzenie kontenera: System tworzy kontener i informuje użytkownika o pomyślnym zakończeniu procesu.
+
+
+Dodawanie klucza do kontenera
+1.	Wybór kontenera: Użytkownik wybiera kontener, do którego chce dodać klucz.
+
+2.	Dodawanie klucza: Użytkownik wybiera opcję "Dodaj klucz" i wpisuje nazwę dla nowego klucza.
+
+3.	Generowanie i zapis klucza: System generuje klucz szyfrujący, zapisuje go w wybranym kontenerze i informuje o pomyślnym dodaniu klucza.
+
+Szyfrowanie wiadomości
+1.	Wybór opcji szyfrowania: Użytkownik wybiera opcję "Szyfruj wiadomość".
+
+2.	Wybór klucza i wprowadzenie wiadomości: Użytkownik wybiera klucz z kontenera i wpisuje wiadomość, którą chce zaszyfrować.
+
+3.	Szyfrowanie i wyświetlanie wyniku: System szyfruje wiadomość używając wybranego klucza i wyświetla zaszyfrowaną wiadomość.
+
+Deszyfrowanie wiadomości
+1.	Wybór opcji deszyfrowania: Użytkownik wybiera opcję "Deszyfruj wiadomość".
+
+2.	Wybór klucza i wprowadzenie zaszyfrowanej wiadomości: Użytkownik wybiera ten sam klucz, który został użyty do szyfrowania, i wpisuje zaszyfrowaną wiadomość.
+
+3.	Deszyfrowanie i wyświetlanie wyniku: System deszyfruje wiadomość i prezentuje jej oryginalną treść użytkownikowi.
