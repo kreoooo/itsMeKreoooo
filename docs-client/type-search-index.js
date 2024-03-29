@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"pl.kielce.tu.battleshipsclientv4","l":"ClientApplication"},{"p":"pl.kielce.tu.battleshipsclientv4","l":"ClientController"},{"p":"pl.kielce.tu.battleshipsclientv4","l":"ClientHandler"}];updateSearchResults();
